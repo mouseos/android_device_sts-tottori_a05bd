@@ -5,6 +5,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-add_lunch_combo omni_TAB-A05-BD-user
-add_lunch_combo omni_TAB-A05-BD-userdebug
-add_lunch_combo omni_TAB-A05-BD-eng
+add_lunch_combo omni_a05bd-user
+add_lunch_combo omni_a05bd-userdebug
+add_lunch_combo omni_a05bd-eng

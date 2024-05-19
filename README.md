@@ -1,4 +1,4 @@
-# Android device tree for benesse TAB-A05-BD (TAB-A05-BD)
+# Android device tree for benesse a05bd (a05bd)
 
 ```
 #

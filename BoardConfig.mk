@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-DEVICE_PATH := device/sts-tottori/TAB-A05-BD
+DEVICE_PATH := device/sts/a05bd
 
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true
@@ -29,7 +29,7 @@ TARGET_2ND_CPU_VARIANT_RUNTIME := generic
 OVERRIDE_TARGET_FLATTEN_APEX := true
 
 # Bootloader
-TARGET_BOOTLOADER_BOARD_NAME := TAB-A05-BD
+TARGET_BOOTLOADER_BOARD_NAME := a05bd
 TARGET_NO_BOOTLOADER := true
 
 # Display
@@ -47,8 +47,8 @@ BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
 BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_KERNEL_SEPARATED_DTBO := true
-TARGET_KERNEL_CONFIG := TAB-A05-BD_defconfig
-TARGET_KERNEL_SOURCE := kernel/sts-tottori/TAB-A05-BD
+TARGET_KERNEL_CONFIG := a05bd_defconfig
+TARGET_KERNEL_SOURCE := kernel/sts/a05bd
 
 # Kernel - prebuilt
 TARGET_FORCE_PREBUILT_KERNEL := true

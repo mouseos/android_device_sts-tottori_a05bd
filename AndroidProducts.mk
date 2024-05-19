@@ -6,9 +6,9 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/omni_TAB-A05-BD.mk
+    $(LOCAL_DIR)/omni_a05bd.mk
 
 COMMON_LUNCH_CHOICES := \
-    omni_TAB-A05-BD-user \
-    omni_TAB-A05-BD-userdebug \
-    omni_TAB-A05-BD-eng
+    omni_a05bd-user \
+    omni_a05bd-userdebug \
+    omni_a05bd-eng

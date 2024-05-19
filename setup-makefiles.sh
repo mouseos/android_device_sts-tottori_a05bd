@@ -8,8 +8,8 @@
 
 set -e
 
-DEVICE=TAB-A05-BD
-VENDOR=sts-tottori
+DEVICE=a05bd
+VENDOR=sts
 
 # Load extract_utils and do some sanity checks
 MY_DIR="${BASH_SOURCE%/*}"
