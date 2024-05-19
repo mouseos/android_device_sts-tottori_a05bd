@@ -1,4 +1,4 @@
-name: Make a04br3 Recovery
+name: Make TAB-A05-BD Recovery
 
 on:
   workflow_dispatch:
