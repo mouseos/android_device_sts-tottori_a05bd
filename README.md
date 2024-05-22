@@ -1,7 +1,6 @@
 # Android device tree for benesse a05bd (a05bd)
 
-チャレンジパッドneo用TWRPデバイスツリーです。ビルドは通りますが、recoveryパーティション16MBに対して容量23MBのrecovery.imgが生成されるため使用できません。
-
+チャレンジパッドneo用TWRPデバイスツリーです。
 ```
 #
 # Copyright (C) 2024 The Android Open Source Project
