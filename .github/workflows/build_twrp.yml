@@ -1,20 +1,46 @@
 name: Recovery Build (Legacy)
 
 on:
-  push:
-    branches:
-      - main  # 実行するブランチを指定
-
-env:
-  MANIFEST_URL: 'https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni'
-  MANIFEST_BRANCH: 'twrp-9.0'
-  DEVICE_TREE_URL: 'https://github.com/mouseos/android_device_sts-tottori_a05bd'
-  DEVICE_TREE_BRANCH: 'main'
-  DEVICE_PATH: 'device/sts/a05bd'
-  DEVICE_NAME: 'a05bd'
-  MAKEFILE_NAME: 'omni_a05bd'
-  BUILD_TARGET: 'recovery'
-  # COMMON_TREE_URLとCOMMON_PATHを必要に応じて指定してください
+  workflow_dispatch:
+    inputs:
+      MANIFEST_URL:
+        description: 'MANIFEST_URL (if want to use SSH keys, use git@github.com:XXXXX)'
+        required: true
+        default: 'https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni'
+      MANIFEST_BRANCH:
+        description: 'MANIFEST_BRANCH'
+        required: true
+        default: 'twrp-7.1'
+      DEVICE_TREE_URL:
+        description: 'DEVICE_TREE_URL'
+        required: true
+        default: 'https://github.com/ycly2333/android_device_EEBBK_H3000S-twrp'
+      DEVICE_TREE_BRANCH:
+        description: 'DEVICE_TREE_BRANCH'
+        required: true
+        default: 'twrp-7.1'
+      DEVICE_PATH:
+        description: 'DEVICE_PATH'
+        required: true
+        default: 'device/EEBBK/H3000S'
+      COMMON_TREE_URL:
+        description: 'COMMON_TREE_URL (if no common tree, leave blank)'
+        required: false
+      COMMON_PATH:
+        description: 'COMMON_PATH (if no common tree, leave blank)'
+        required: false
+      DEVICE_NAME:
+        description: 'DEVICE_NAME'
+        required: true
+        default: 'H3000S'
+      MAKEFILE_NAME:
+        description: 'MAKEFILE_NAME'
+        required: true
+        default: 'omni_H3000S'
+      BUILD_TARGET:
+        description: 'BUILD_TARGET'
+        required: true
+        default: 'recovery'
 
 jobs:
   build:
@@ -26,21 +52,28 @@ jobs:
     - name: Display Run Parameters
       run: |
         echo "::group::User Environment Variables"
-        echo "Manifest URL: $MANIFEST_URL"
-        echo "Manifest Branch: $MANIFEST_BRANCH"
-        echo "Device Tree URL: $DEVICE_TREE_URL"
-        echo "Device Tree Branch: $DEVICE_TREE_BRANCH"
-        echo "Device Path: $DEVICE_PATH"
-        echo "Device Name: $DEVICE_NAME"
-        echo "Makefile Name: $MAKEFILE_NAME"
-        echo "Build Target: $BUILD_TARGET.img"
+        echo "Manifest URL: ${{ github.event.inputs.MANIFEST_URL }}"
+        echo "Manifest Branch: ${{ github.event.inputs.MANIFEST_BRANCH }}"
+        echo "Device Tree URL: ${{ github.event.inputs.DEVICE_TREE_URL }}"
+        echo "Device Tree Branch: ${{ github.event.inputs.DEVICE_TREE_BRANCH }}"
+        echo "Device Path: ${{ github.event.inputs.DEVICE_PATH }}"
+        echo "Device Name: ${{ github.event.inputs.DEVICE_NAME }}"
+        echo "Makefile Name: ${{ github.event.inputs.MAKEFILE_NAME }}"
+        echo "Build Target: ${{ github.event.inputs.BUILD_TARGET }}.img"
         echo "::endgroup::"
  
+    # You might want to Checkout your repo first, but not mandatory
     - name: Check Out
       uses: actions/checkout@v3
-
+    - name: Check Dir
+      run: |
+        pwd
+        ls -l
+        exit 1
+    # Cleanup The Actions Workspace Using Custom Composite Run Actions
     - name: Cleanup
       uses: rokibhasansagar/slimhub_actions@main
+      # That's it! Now use your normal steps
 
     - name: Prepare the environment
       run: |
@@ -55,7 +88,7 @@ jobs:
         java-version: '8'
 
     - name: Setup SSH Keys
-      if: ${{ startsWith(env.MANIFEST_URL, 'git@github.com') }}
+      if: ${{ startsWith(github.event.inputs.MANIFEST_URL, 'git@github.com') }}
       uses: webfactory/ssh-agent@v0.5.4
       with:
           ssh-private-key: |
@@ -75,7 +108,7 @@ jobs:
         echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
         git config --global user.name "azwhikaru"
         git config --global user.email "azwhikaru+37921907@github.com"
-        repo init --depth=1 -u $MANIFEST_URL -b $MANIFEST_BRANCH
+        repo init --depth=1 -u ${{ github.event.inputs.MANIFEST_URL }} -b ${{ github.event.inputs.MANIFEST_BRANCH }}
       id: pwd
           
     - name: Repo Sync
@@ -83,28 +116,18 @@ jobs:
         repo sync -j$(nproc --all) --force-sync
       working-directory: workspace
       
-    - name: Move repository files
+    - name: Clone device tree
       run: |
-        tree -L 3
-        shopt -s extglob
-        mkdir -p device/sts/a05bd/
-        mv !(device|.github) $DEVICE_PATH/
+        git clone ${{ github.event.inputs.DEVICE_TREE_URL }} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ./${{ github.event.inputs.DEVICE_PATH }}
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
     - name: Clone common tree
       if: |
-        env.COMMON_TREE_URL != null
-        && env.COMMON_PATH != null
+        github.event.inputs.COMMON_TREE_URL != null
+        && github.event.inputs.COMMON_PATH != null
       run: |
-        git clone $COMMON_TREE_URL -b $DEVICE_TREE_BRANCH ./$COMMON_PATH
+        git clone ${{ github.event.inputs.COMMON_TREE_URL }} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ./${{ github.event.inputs.COMMON_PATH }}
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
-
-    - name: Sync Device Dependencies
-      run: |
-        bash ${GITHUB_WORKSPACE}/scripts/convert.sh $DEVICE_PATH/${{ steps.buildtree.outputs.value }}.dependencies
-        repo sync -j$(nproc --all)
-      working-directory: ${{ steps.pwd.outputs.workspace-folder }}
-      continue-on-error: true
 
     - name: Set Swap Space
       uses: pierotofy/set-swap-space@master
@@ -121,24 +144,23 @@ jobs:
 
     - name: Building recovery
       run: |
-        tree -L 3
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
-        lunch $MAKEFILE_NAME-eng && make clean && make $BUILD_TARGETimage -j$(nproc --all)
+        lunch ${{ github.event.inputs.MAKEFILE_NAME }}-eng && make clean && make ${{ github.event.inputs.BUILD_TARGET }}image -j$(nproc --all)
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
     - name: Upload to Release
       uses: softprops/action-gh-release@v1
       with:
         files: | 
-          workspace/out/target/product/$DEVICE_NAME/$BUILD_TARGET.img
-          workspace/out/target/product/$DEVICE_NAME/*.zip
-          workspace/out/target/product/$DEVICE_NAME/*vendor*.img
-        name: $DEVICE_NAME-${{ github.run_id }}
+          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/${{ github.event.inputs.BUILD_TARGET }}.img
+          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*.zip
+          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*vendor*.img
+        name: ${{ github.event.inputs.DEVICE_NAME }}-${{ github.run_id }}
         tag_name: ${{ github.run_id }}
         body: |
-          Manifest: $MANIFEST_BRANCH
-          Device: $DEVICE_NAME
-          Target: $BUILD_TARGET.img
+          Manifest: ${{ github.event.inputs.MANIFEST_BRANCH }}
+          Device: ${{ github.event.inputs.DEVICE_NAME }}
+          Target: ${{ github.event.inputs.BUILD_TARGET }}.img
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
