@@ -99,6 +99,7 @@ PLATFORM_VERSION := 16.1.0
 # TWRP Configuration
 TW_THEME := landscape_hdpi
 TW_EXTRA_LANGUAGES := false
+TW_DEFAULT_LANGUAGE := ja-JP
 TW_SCREEN_BLANK_ON_BOOT := true
 TW_INPUT_BLACKLIST := "hbtp_vm"
 TW_USE_TOOLBOX := true
