@@ -39,10 +39,6 @@ jobs:
     # You might want to Checkout your repo first, but not mandatory
     - name: Check Out
       uses: actions/checkout@v3
-    - name: Move files to workspace
-      run: |
-        mkdir -p workspace/${{ github.event.inputs.DEVICE_PATH }}
-        ls | grep -v workspace | xargs -I{} mv {} workspace/${{ github.event.inputs.DEVICE_PATH }}
 
     # Cleanup The Actions Workspace Using Custom Composite Run Actions
     - name: Cleanup
@@ -89,10 +85,10 @@ jobs:
         repo sync -j$(nproc --all) --force-sync
       working-directory: workspace
       
-    - name: Clone device tree
+    - name: Move files to workspace
       run: |
-        git clone ${{ github.event.inputs.DEVICE_TREE_URL }} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ./${{ github.event.inputs.DEVICE_PATH }}
-      working-directory: ${{ steps.pwd.outputs.workspace-folder }}
+        mkdir -p workspace/${{ github.event.inputs.DEVICE_PATH }}
+        ls | grep -v workspace | xargs -I{} mv {} workspace/${{ github.event.inputs.DEVICE_PATH }}
 
     - name: Clone common tree
       if: |
