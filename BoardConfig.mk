@@ -106,3 +106,4 @@ TW_USE_TOOLBOX := true
 #for a05bd
 TW_THEME := landscape_hdpi
 RECOVERY_TOUCHSCREEN_SWAP_XY := true
+RECOVERY_TOUCHSCREEN_FLIP_Y := true
