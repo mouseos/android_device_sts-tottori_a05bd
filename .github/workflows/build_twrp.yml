@@ -1,46 +1,20 @@
 name: Recovery Build (Legacy)
 
 on:
-  workflow_dispatch:
-    inputs:
-      MANIFEST_URL:
-        description: 'MANIFEST_URL (if want to use SSH keys, use git@github.com:XXXXX)'
-        required: true
-        default: 'https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni'
-      MANIFEST_BRANCH:
-        description: 'MANIFEST_BRANCH'
-        required: true
-        default: 'twrp-7.1'
-      DEVICE_TREE_URL:
-        description: 'DEVICE_TREE_URL'
-        required: true
-        default: 'https://github.com/ycly2333/android_device_EEBBK_H3000S-twrp'
-      DEVICE_TREE_BRANCH:
-        description: 'DEVICE_TREE_BRANCH'
-        required: true
-        default: 'twrp-7.1'
-      DEVICE_PATH:
-        description: 'DEVICE_PATH'
-        required: true
-        default: 'device/EEBBK/H3000S'
-      COMMON_TREE_URL:
-        description: 'COMMON_TREE_URL (if no common tree, leave blank)'
-        required: false
-      COMMON_PATH:
-        description: 'COMMON_PATH (if no common tree, leave blank)'
-        required: false
-      DEVICE_NAME:
-        description: 'DEVICE_NAME'
-        required: true
-        default: 'H3000S'
-      MAKEFILE_NAME:
-        description: 'MAKEFILE_NAME'
-        required: true
-        default: 'omni_H3000S'
-      BUILD_TARGET:
-        description: 'BUILD_TARGET'
-        required: true
-        default: 'recovery'
+  push:
+    branches:
+      - main  # 実行するブランチを指定
+
+env:
+  MANIFEST_URL: 'https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni'
+  MANIFEST_BRANCH: 'twrp-9.0'
+  DEVICE_TREE_URL: 'https://github.com/mouseos/android_device_sts-tottori_a05bd'
+  DEVICE_TREE_BRANCH: 'main'
+  DEVICE_PATH: 'device/sts/a05bd'
+  DEVICE_NAME: 'a05bd'
+  MAKEFILE_NAME: 'omni_a05bd'
+  BUILD_TARGET: 'recovery'
+  # COMMON_TREE_URLとCOMMON_PATHを必要に応じて指定してください
 
 jobs:
   build:
