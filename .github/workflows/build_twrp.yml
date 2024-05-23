@@ -86,6 +86,7 @@ jobs:
     - name: Move repository files
       run: |
         shopt -s extglob
+        mkdir -p device/sts/a05bd/
         mv !(device|.github) $DEVICE_PATH/
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
