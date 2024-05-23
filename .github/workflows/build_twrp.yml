@@ -26,14 +26,14 @@ jobs:
     - name: Display Run Parameters
       run: |
         echo "::group::User Environment Variables"
-        echo "Manifest URL: ${{ github.event.inputs.MANIFEST_URL }}"
-        echo "Manifest Branch: ${{ github.event.inputs.MANIFEST_BRANCH }}"
-        echo "Device Tree URL: ${{ github.event.inputs.DEVICE_TREE_URL }}"
-        echo "Device Tree Branch: ${{ github.event.inputs.DEVICE_TREE_BRANCH }}"
-        echo "Device Path: ${{ github.event.inputs.DEVICE_PATH }}"
-        echo "Device Name: ${{ github.event.inputs.DEVICE_NAME }}"
-        echo "Makefile Name: ${{ github.event.inputs.MAKEFILE_NAME }}"
-        echo "Build Target: ${{ github.event.inputs.BUILD_TARGET }}.img"
+        echo "Manifest URL: ${{ env.MANIFEST_URL }}"
+        echo "Manifest Branch: ${{ env.MANIFEST_BRANCH }}"
+        echo "Device Tree URL: ${{ env.DEVICE_TREE_URL }}"
+        echo "Device Tree Branch: ${{ env.DEVICE_TREE_BRANCH }}"
+        echo "Device Path: ${{ env.DEVICE_PATH }}"
+        echo "Device Name: ${{ env.DEVICE_NAME }}"
+        echo "Makefile Name: ${{ env.MAKEFILE_NAME }}"
+        echo "Build Target: ${{ env.BUILD_TARGET }}.img"
         echo "::endgroup::"
  
     # You might want to Checkout your repo first, but not mandatory
@@ -58,7 +58,7 @@ jobs:
         java-version: '8'
 
     - name: Setup SSH Keys
-      if: ${{ startsWith(github.event.inputs.MANIFEST_URL, 'git@github.com') }}
+      if: ${{ startsWith(env.MANIFEST_URL, 'git@github.com') }}
       uses: webfactory/ssh-agent@v0.5.4
       with:
           ssh-private-key: |
@@ -78,7 +78,7 @@ jobs:
         echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
         git config --global user.name "azwhikaru"
         git config --global user.email "azwhikaru+37921907@github.com"
-        repo init --depth=1 -u ${{ github.event.inputs.MANIFEST_URL }} -b ${{ github.event.inputs.MANIFEST_BRANCH }}
+        repo init --depth=1 -u ${{ env.MANIFEST_URL }} -b ${{ env.MANIFEST_BRANCH }}
       id: pwd
           
     - name: Repo Sync
@@ -88,15 +88,15 @@ jobs:
       
     - name: Move files to workspace
       run: |
-        mkdir -p workspace/${{ github.event.inputs.DEVICE_PATH }}
-        ls | grep -v workspace | xargs -I{} mv {} workspace/${{ github.event.inputs.DEVICE_PATH }}
+        mkdir -p workspace/${{ env.DEVICE_PATH }}
+        ls | grep -v workspace | xargs -I{} mv {} workspace/${{ env.DEVICE_PATH }}
 
     - name: Clone common tree
       if: |
-        github.event.inputs.COMMON_TREE_URL != null
-        && github.event.inputs.COMMON_PATH != null
+        env.COMMON_TREE_URL != null
+        && env.COMMON_PATH != null
       run: |
-        git clone ${{ github.event.inputs.COMMON_TREE_URL }} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ./${{ github.event.inputs.COMMON_PATH }}
+        git clone ${{ env.COMMON_TREE_URL }} -b ${{ env.DEVICE_TREE_BRANCH }} ./${{ env.COMMON_PATH }}
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
     - name: Set Swap Space
@@ -116,21 +116,21 @@ jobs:
       run: |
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
-        lunch ${{ github.event.inputs.MAKEFILE_NAME }}-eng && make clean && make ${{ github.event.inputs.BUILD_TARGET }}image -j$(nproc --all)
+        lunch ${{ env.MAKEFILE_NAME }}-eng && make clean && make ${{ env.BUILD_TARGET }}image -j$(nproc --all)
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
     - name: Upload to Release
       uses: softprops/action-gh-release@v1
       with:
         files: | 
-          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/${{ github.event.inputs.BUILD_TARGET }}.img
-          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*.zip
-          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*vendor*.img
-        name: ${{ github.event.inputs.DEVICE_NAME }}-${{ github.run_id }}
+          workspace/out/target/product/${{ env.DEVICE_NAME }}/${{ env.BUILD_TARGET }}.img
+          workspace/out/target/product/${{ env.DEVICE_NAME }}/*.zip
+          workspace/out/target/product/${{ env.DEVICE_NAME }}/*vendor*.img
+        name: ${{ env.DEVICE_NAME }}-${{ github.run_id }}
         tag_name: ${{ github.run_id }}
         body: |
-          Manifest: ${{ github.event.inputs.MANIFEST_BRANCH }}
-          Device: ${{ github.event.inputs.DEVICE_NAME }}
-          Target: ${{ github.event.inputs.BUILD_TARGET }}.img
+          Manifest: ${{ env.MANIFEST_BRANCH }}
+          Device: ${{ env.DEVICE_NAME }}
+          Target: ${{ env.BUILD_TARGET }}.img
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
