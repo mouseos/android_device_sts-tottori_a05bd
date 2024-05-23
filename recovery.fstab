@@ -11,6 +11,7 @@ auto                   vfat     /devices/platform/mt_usb*                       
 auto                   vfat     /devices/platform/soc/11190000.usb*                 flags=display=auto
 auto                   vfat     /devices/platform/soc/mt_usb*                       flags=display=auto
 auto                   vfat     /devices/platform/soc/11201000.usb*                 flags=display=auto
+/external_sd           auto     /dev/block/mmcblk1p1       /dev/block/mmcblk1       flags=storage;removable
 /nvram                 emmc     /dev/block/platform/bootdevice/by-name/nvram        flags=display=nvram
 /proinfo               emmc     /dev/block/platform/bootdevice/by-name/proinfo      flags=display=proinfo
 /bootloader            emmc     /dev/block/platform/bootdevice/by-name/lk           flags=display=bootloader
