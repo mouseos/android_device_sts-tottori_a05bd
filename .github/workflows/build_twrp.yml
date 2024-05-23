@@ -42,7 +42,7 @@ jobs:
     - name: Move files to workspace
       run: |
         mkdir workspace
-        mv ./* workspace 
+        mv !(workspace) workspace
     - name: Check Dir
       run: |
         pwd
