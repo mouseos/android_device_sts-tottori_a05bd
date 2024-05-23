@@ -85,6 +85,7 @@ jobs:
       
     - name: Move repository files
       run: |
+        tree -L 3
         shopt -s extglob
         mkdir -p device/sts/a05bd/
         mv !(device|.github) $DEVICE_PATH/
@@ -120,6 +121,7 @@ jobs:
 
     - name: Building recovery
       run: |
+        tree -L 3
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
         lunch $MAKEFILE_NAME-eng && make clean && make $BUILD_TARGETimage -j$(nproc --all)
