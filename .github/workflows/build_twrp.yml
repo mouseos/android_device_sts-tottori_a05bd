@@ -43,12 +43,7 @@ jobs:
       run: |
         mkdir workspace
         ls | grep -v workspace | xargs -I{} mv {} workspace
-    - name: Check Dir
-      run: |
-        pwd
-        ls -l
-        tree -L 3
-        exit 1
+
     # Cleanup The Actions Workspace Using Custom Composite Run Actions
     - name: Cleanup
       uses: rokibhasansagar/slimhub_actions@main
