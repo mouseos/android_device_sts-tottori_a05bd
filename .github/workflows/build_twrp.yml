@@ -77,7 +77,6 @@ jobs:
       
     - name: Initialize repo
       run: |
-        mkdir workspace
         cd workspace
         echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
         git config --global user.name "azwhikaru"
