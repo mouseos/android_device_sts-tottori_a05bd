@@ -3,11 +3,12 @@
 /vendor                ext4     /dev/block/platform/bootdevice/by-name/vendor       flags=ignoreblkid
 /vendor_image          emmc     /dev/block/platform/bootdevice/by-name/vendor       flags=display=vendor_image
 /dtbo                  emmc     /dev/block/platform/bootdevice/by-name/dtbo         flags=backup=1
-/data                  ext4     /dev/block/platform/bootdevice/by-name/userdata     flags=ignoreblkid;fsflags=noatime,nosuid,nodev,noauto_da_alloc,discard wait,check,quota,resize,reservedsize=128m,encryptable=/dev/block/platform/bootdevice/by-name/metadata
+/data                  ext4     /dev/block/platform/bootdevice/by-name/userdata     flags=ignoreblkid;fsflags=noatime,nosuid,nodev,noauto_da_alloc,discard wait,check,quota,resize,reservedsize=128m,forcefdeorfbe=/dev/block/platform/bootdevice/by-name/metadata
 /cache                 ext4     /dev/block/platform/bootdevice/by-name/cache        flags=backup=1
 /mnt/vendor/nvdata     ext4     /dev/block/platform/bootdevice/by-name/nvdata       flags=display=nvdata
 /factory               ext4     /dev/block/platform/bootdevice/by-name/factory      flags=display=factory
 /mnt/vendor/nvcfg      ext4     /dev/block/platform/bootdevice/by-name/nvcfg        flags=display=nvcfg
+auto                   emmc     /dev/block/mmcblk0p32                               flags=display=intrelstorage
 auto                   vfat     /devices/platform/soc/11240000.mmc*                 flags=display=auto
 auto                   vfat     /devices/platform/mt_usb*                           flags=display=auto
 auto                   vfat     /devices/platform/soc/11190000.usb*                 flags=display=auto
