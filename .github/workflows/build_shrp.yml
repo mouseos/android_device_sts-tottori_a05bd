@@ -6,8 +6,8 @@ on:
       - main  # 実行するブランチを指定
 
 env:
-  MANIFEST_URL: 'https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni'
-  MANIFEST_BRANCH: 'twrp-9.0'
+  MANIFEST_URL: 'https://github.com/SHRP/manifest'
+  MANIFEST_BRANCH: 'v3_9.0'
   DEVICE_TREE_URL: 'https://github.com/mouseos/android_device_sts-tottori_a05bd'
   DEVICE_TREE_BRANCH: 'main'
   DEVICE_PATH: 'device/sts/a05bd'
@@ -126,7 +126,7 @@ jobs:
           workspace/out/target/product/${{ env.DEVICE_NAME }}/${{ env.BUILD_TARGET }}.img
           workspace/out/target/product/${{ env.DEVICE_NAME }}/*.zip
           workspace/out/target/product/${{ env.DEVICE_NAME }}/*vendor*.img
-        name: ${{ env.DEVICE_NAME }}-${{ github.run_id }}
+        name: shrp-${{ env.DEVICE_NAME }}-${{ github.run_id }}
         tag_name: ${{ github.run_id }}
         body: |
           Manifest: ${{ env.MANIFEST_BRANCH }}
