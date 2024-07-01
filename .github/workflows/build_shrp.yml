@@ -3,7 +3,7 @@ name: Recovery Build (Legacy)
 on:
   push:
     branches:
-      - main  # 実行するブランチを指定
+      - shrp  # 実行するブランチを指定
 
 env:
   MANIFEST_URL: 'https://github.com/SHRP/manifest'
