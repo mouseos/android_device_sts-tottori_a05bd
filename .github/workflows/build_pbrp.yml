@@ -3,7 +3,7 @@ name: Recovery Build (Legacy)
 on:
   push:
     branches:
-      - main  # 実行するブランチを指定
+      - pbrp  # 実行するブランチを指定
 
 env:
   MANIFEST_URL: 'https://github.com/PitchBlackRecoveryProject/manifest_pb'
